@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	conn, err := amqp.Dial("ampq://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	failOnError(err, "failed to connect rabbitmq")
 	defer conn.Close()
 	ch, err := conn.Channel()
@@ -22,7 +22,7 @@ func main() {
 	defer cancel()
 
 	body := "hello world"
-	err = PublishWithContext(ctx, "", q.Name, false, false, amqp.Publishing{ContentType: "text/plain", Body: []byte(body)})
+	err = ch.PublishWithContext(ctx, "", q.Name, false, false, amqp.Publishing{ContentType: "text/plain", Body: []byte(body)})
 	failOnError(err, "failed  to publish a message")
 	log.Printf("[x] sent %s\n", body)
 }
